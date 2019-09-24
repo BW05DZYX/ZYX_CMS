@@ -1,0 +1,4 @@
+resource/
+*.class
+WebContent/
+/target/
