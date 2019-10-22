@@ -18,6 +18,12 @@ public interface ArticleService {
 	 * @return
 	 */
 	int post(Article article);
+	
+	/**
+	 * 修改点击量
+	 * @return
+	 */
+	int uphits(Integer id);
 
 	/**
 	 * 修改一篇文章
@@ -133,5 +139,17 @@ public interface ArticleService {
 	 * @return
 	 */
 	List<Article> last();
+	
+	/**
+	 * 获取点击率文章
+	 * @return
+	 */
+	PageInfo<Article> hitsList(int page,int pageSize);
+	
+	/**
+	 * 获取评论列表
+	 * @return
+	 */
+	PageInfo<Article> commentList(int page,int pageSize);
 
 }

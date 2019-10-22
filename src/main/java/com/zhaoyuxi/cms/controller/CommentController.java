@@ -60,9 +60,6 @@ public class CommentController {
 	@ResponseBody
 	public String post(HttpServletRequest request,Comment comment){
 		User user =(User) request.getSession().getAttribute(ConstantFinal.USER_SESSION_KEY);
-		if(user==null){
-			return "You are not logged in and cannot comment";
-		               }
 		comment.setUserId(user.getId());
 		int result = commentService.post(comment);
 		if(result>0)
@@ -83,13 +80,16 @@ public class CommentController {
 	@GetMapping("getlist")
 	public String getlist(HttpServletRequest request,
 			Integer articleId,@RequestParam(defaultValue="1") Integer page,
-			@RequestParam(defaultValue="3") Integer pageSize){
-		
+			@RequestParam(defaultValue="10") Integer pageSize){
+		//获取评论列表，通过文章id
 		PageInfo<Comment> commentsByArticle = commentService.getCommentsByArticle(articleId, page, pageSize);
+		
 		System.out.println(commentsByArticle);
+		//使用分页工具类创建分页按钮
 		String pagestr = PageUtil.page(commentsByArticle.getPageNum(),
 				commentsByArticle.getPages(), "/commnent/getlist?articleId="+articleId, 
 				commentsByArticle.getPageSize());
+		//保存参数
 		request.setAttribute("commenPage", commentsByArticle);
 		request.setAttribute("pagestr", pagestr);
 		return "index/comment/list";

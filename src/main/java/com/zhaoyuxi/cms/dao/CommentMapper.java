@@ -2,6 +2,7 @@ package com.zhaoyuxi.cms.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.zhaoyuxi.cms.entity.Comment;
@@ -11,6 +12,7 @@ import com.zhaoyuxi.cms.entity.Comment;
 *@version 创建时间：2019年9月23日 下午8:32:33
 *评论mapper
 */
+@Mapper
 public interface CommentMapper {
 //## 增加 ##----------------------------------------------------------------------------------------------------------
 	/**

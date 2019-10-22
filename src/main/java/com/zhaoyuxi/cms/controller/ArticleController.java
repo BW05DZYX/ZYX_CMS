@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -176,11 +177,29 @@ public class ArticleController {
 	 * @return
 	 */
 	@RequestMapping("getDetail")
-	public String getDetail(HttpServletRequest request, Integer aId) {
+	public String getDetail(HttpSession session,HttpServletRequest request, Integer aId) {
 
 		Article article = articleService.findById(aId);
+		//获取频道下所有文章
 		PageInfo<Article> list = articleService.list(0, article.getChannelId(), 0);
+		//调用上下篇工具类
 		String pageAround=PageUtilMy.pageAround(list, aId);
+		//获取点击文章，获取评论文章
+		
+		Object obj=session.getAttribute(ConstantFinal.USER_SESSION_KEY);
+		if(obj==null) {
+			request.setAttribute("mes", "no logged in");
+		}else {
+			request.setAttribute("mes", "it is ok");
+		}
+		articleService.uphits(aId);
+		
+		PageInfo<Article> hitList =articleService.hitsList(0, 0);
+		PageInfo<Article> commentList=articleService.commentList(0, 0);
+		
+		request.setAttribute("hitList", hitList);
+		request.setAttribute("commentList", commentList);
+		
 		request.setAttribute("pageAround", pageAround);
 		request.setAttribute("article", article);
 		return "index/article/detail";

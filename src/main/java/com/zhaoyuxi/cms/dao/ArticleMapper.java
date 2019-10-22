@@ -29,6 +29,12 @@ public interface ArticleMapper {
 //## 修改 ##----------------------------------------------------------------------------------------------------------
 
 	/**
+	 * 修改点击量
+	 * @return
+	 */
+	int uphits(Integer id);
+	
+	/**
 	 * 修改文章的状态
 	 * @param id
 	 * @param status 0 未审核 1 审核 通过 2审核不通过
@@ -111,7 +117,16 @@ public interface ArticleMapper {
 	 */
 	List<Article> lastArticles();
 	
+	/**
+	 * 获取点击率文章
+	 * @return
+	 */
+	List<Article> hitsList();
 	
-	
+	/**
+	 * 获取评论列表
+	 * @return
+	 */
+	List<Article> commentList();
 	
 }

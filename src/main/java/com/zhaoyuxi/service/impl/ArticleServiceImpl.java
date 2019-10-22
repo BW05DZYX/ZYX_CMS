@@ -52,6 +52,11 @@ public class ArticleServiceImpl implements ArticleService {
 	}
 
 	@Override
+	public int uphits(Integer id) {
+		return articleMapper.uphits(id);
+	}
+	
+	@Override
 	public int check(Integer id, Integer status) {
 		return articleMapper.updateStatus(id,status);
 	}
@@ -104,7 +109,6 @@ public class ArticleServiceImpl implements ArticleService {
 
 	@Override
 	public PageInfo<Article> listhots(String title,Integer pageNum, Integer pageSize) {
-		// TODO Auto-generated method stub
 		PageHelper.startPage(pageNum, pageSize);
 		System.out.println("title   is ============ " + title);
 		List<Article> articles=  articleMapper.hotList(title);
@@ -115,6 +119,20 @@ public class ArticleServiceImpl implements ArticleService {
 	@Override
 	public List<Article> last() {
 		return articleMapper.lastArticles();
+	}
+
+	
+
+	@Override
+	public PageInfo<Article> hitsList(int page,int pageSize) {
+		PageHelper.startPage(1,10);
+		return new PageInfo<Article>(articleMapper.hitsList());
+	}
+
+	@Override
+	public PageInfo<Article> commentList(int page,int pageSize) {
+		PageHelper.startPage(1,10);
+		return new PageInfo<Article>(articleMapper.commentList());
 	}
 
 	
