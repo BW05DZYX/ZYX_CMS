@@ -1,14 +1,24 @@
 package com.zhaoyuxi.cms.entity;
 
+import java.io.Serializable;
 import java.util.Date;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
 
 /**
 *@author 作者:赵玉玺
 *@version 创建时间：2019年9月18日 下午7:35:50
 *类功能说明
 */
-public class Article {
+@Document(indexName = "cms001",type = "article")
+public class Article implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8143842782246919606L;
+	@Id
 	private Integer id;
 	// 标题
 	private String  title;

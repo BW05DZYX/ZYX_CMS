@@ -274,6 +274,12 @@
 			<artifactId>zhaoyuxi-common</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		<!-- 爬取文章 -->
+		<dependency>
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+			<version>1.12.1</version>
+		</dependency>
 
 
 	</dependencies>
@@ -336,10 +342,10 @@
 			<plugin>
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-maven-plugin</artifactId>
-				<!-- <version>10.0.0-alpha0</version>
-				<version>9.3.7.v20160115</version> -->
+				<!-- <version>10.0.0-alpha0</version> <version>9.3.7.v20160115</version> -->
 				<version>9.4.21.v20190926</version>
 				<configuration>
+					<scanIntervalSeconds>2</scanIntervalSeconds>
 					<httpConnector>
 						<port>80</port>
 						<host>localhost</host>
@@ -354,7 +360,7 @@
 							<resourceBase>d:/pic/</resourceBase>
 						</jettyWebAppContext>
 					</contextHandlers>
-					<scanIntervalSeconds>1</scanIntervalSeconds>
+
 				</configuration>
 			</plugin>
 

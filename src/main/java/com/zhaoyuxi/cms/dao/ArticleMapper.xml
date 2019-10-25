@@ -10,7 +10,7 @@
 		insert into
 		cms_article(status,created,hits,hot,deleted,content,title,picture,channel_id,category_id,user_id)
 
-		values(0,now(),0,0,0,#{content},#{title},#{picture},#{channelId},#{categoryId},#{userId})
+		values(1,now(),0,0,0,#{content},#{title},#{picture},#{channelId},#{categoryId},#{userId})
 	</insert>
 
 	<!--## 删除 ## -->
@@ -149,7 +149,7 @@
 		LEFT join cms_tag as t on
 		t.id=atm.tid
 		where a.hot>0 <!-- and a.status=2 and a.deleted=0 -->
-		<if test='title!=""'>
+		<if test='title!="" and title!=null'>
 			and a.title like concat('%',#{title},'%')
 		</if>
 		group by a.id
