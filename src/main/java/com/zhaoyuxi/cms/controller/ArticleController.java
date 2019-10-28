@@ -67,7 +67,7 @@ public class ArticleController {
 	 * @param pageSize
 	 * @return
 	 */
-	@GetMapping("checkList")
+	@RequestMapping("checkList")
 	public String checkList(HttpServletRequest request,
 			@RequestParam(defaultValue="0")  Integer status,
 			@RequestParam(defaultValue="1",value = "page") int pageNum ,
@@ -137,9 +137,9 @@ public class ArticleController {
 	 */
 	@RequestMapping("listbyCatId")
 	public String getListByCatId(HttpServletRequest request, @RequestParam(defaultValue = "0") Integer channelId,
-			@RequestParam(defaultValue = "0") Integer catId, @RequestParam(defaultValue = "1",value="page") Integer pageNum) {
+			@RequestParam(defaultValue = "0") Integer catId, @RequestParam(defaultValue = "1",value="page") Integer pageNum,HttpSession session) {
 
-		PageInfo<Article> arPage = articleService.list(pageNum, channelId, catId);
+		PageInfo<Article> arPage = articleService.list(pageNum, channelId, catId,(String)session.getAttribute("key"));
 		
 		  String pageString = PageUtil.page(arPage.getPageNum(), arPage.getPages(),
 		  "/article/listbyCatId?catId="+catId, arPage.getPageSize());
@@ -157,14 +157,13 @@ public class ArticleController {
 	 * @return
 	 */
 	@RequestMapping("hots")
-	public String hots(HttpServletRequest request, 
-			 @RequestParam(defaultValue = "") String key ,
+	public String hots(HttpServletRequest request,HttpSession session,
 			 @RequestParam( value="pageSize",defaultValue = "2") Integer pageSize,
 			 @RequestParam(value="page",defaultValue = "1") Integer pageNum) {
-		
-		PageInfo<Article> arPage = articleService.listhots(key,pageNum, pageSize);
+		String str=(String)request.getAttribute("page");
+		PageInfo<Article> arPage = articleService.listhots((String)session.getAttribute("key"),pageNum, pageSize);
 		request.setAttribute("pageInfo", arPage);
-		String pageString = PageUtil.page(arPage.getPageNum(), arPage.getPages(), "/article/hots?key="+key, arPage.getPageSize());
+		String pageString = PageUtil.page(arPage.getPageNum(), arPage.getPages(), "/article/hots?key="+(String)session.getAttribute("key"), arPage.getPageSize());
 		request.setAttribute("pageStr", pageString);
 		return "index/hot/list";
 	}
@@ -181,7 +180,7 @@ public class ArticleController {
 
 		Article article = articleService.findById(aId);
 		//获取频道下所有文章
-		PageInfo<Article> list = articleService.list(0, article.getChannelId(), 0);
+		PageInfo<Article> list = articleService.list(0, article.getChannelId(), 0,(String)session.getAttribute("key"));
 		//调用上下篇工具类
 		String pageAround=PageUtilMy.pageAround(list, aId);
 		//获取点击文章，获取评论文章
@@ -239,7 +238,7 @@ public class ArticleController {
 		    
 		    
 		 // 判断是否有文件上传
-		if (commonsMultipartResolver.isMultipart(request) && img != null) {
+		if (img.getSize()!= 0 && commonsMultipartResolver.isMultipart(request)) {
 			log.debug("img777  is " + img );
 			// 获取原文件的名称
 			String oName = img.getOriginalFilename();
@@ -340,5 +339,11 @@ public class ArticleController {
 	public List<Category> getCatsByChn(Integer channelId) {
 		List<Category> cats = catService.getCategoryByChId(channelId);
 		return cats;
+	}
+	
+	@RequestMapping("sync")
+	public String sync() {
+		articleService.sync();
+		return "redirect:/";
 	}
 }

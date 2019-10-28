@@ -31,7 +31,7 @@
 			<div class="col-md-2 ">
 				<ul class="list-group">
 					<li class="list-group-item  text-center"><a class="channel"
-						href="/">热门</a></li>
+						href="/?key=${sessionScope.key }">热门</a></li>
 					<c:forEach items="${channels}" var="channel">
 						<li class="list-group-item text-center">
 						<a class="channel"
@@ -52,13 +52,13 @@
 					</ol>
 					<div class="carousel-inner">
 						<div class="carousel-item active">
-							<img class="d-block w-100" src="/pic/1.jpg" alt="First slide">
+							<img class="d-block w-100" src="/pic/one.jpg" alt="First slide">
 						</div>
 						<div class="carousel-item">
-							<img class="d-block w-100" src="/pic/2.jpg" alt="Second slide">
+							<img class="d-block w-100" src="/pic/two.jpg" alt="Second slide">
 						</div>
 						<div class="carousel-item">
-							<img class="d-block w-100" src="/pic/3.jpg" alt="Third slide">
+							<img class="d-block w-100" src="/pic/three.jpg" alt="Third slide">
 						</div>
 					</div>
 					<a class="carousel-control-prev" href="#carousel" role="button"

@@ -51,7 +51,7 @@
 				</c:forEach>
 			</ul>
 			<p style="width: 600px">${pageStr }</p>
-			
+
 
 
 		</div>
@@ -59,35 +59,33 @@
 
 </div>
 <script type="text/javascript">
-	$(function() {
-		//当点击左侧菜单时  加载url
-		$('.nav-link').click(function(e) {
-			//获取点击的的url
-			var url = $(this).attr('data');
-			// console.log(url);
-			//在中间区域显示地址的内容
-			// alert("点击了  --- 这个url ： " + url)
-			$('#content-wrapper').load(url);
+	//当点击左侧菜单时  加载url
+	$('.nav-link').click(function(e) {
+		//获取点击的的url
+		var url = $(this).attr('data');
+		// console.log(url);
+		//在中间区域显示地址的内容
+		// alert("点击了  --- 这个url ： " + url)
+		$('#content-wrapper').load(url);
 
-		});
-		//当点击左侧菜单时  加载url
-		$('.mlink').click(function(e) {
-			//alert("点击了全部")
-			//获取点击的的url
-			var url = $(this).attr('data');
-			// console.log(url);
-			//在中间区域显示地址的内容
-			$('#channel_article').load(url);
-		});
+	});
+	//当点击左侧菜单时  加载url
+	$('.mlink').click(function(e) {
+		//alert("点击了全部")
+		//获取点击的的url
+		var url = $(this).attr('data');
+		// console.log(url);
+		//在中间区域显示地址的内容
+		$('#channel_article').load(url);
+	});
 
-		$(".page-link").click(function() {
-			//alert("点击了全部")
-			//获取点击的的url
-			var url = $(this).attr('data');
-			// console.log(url);
-			//在中间区域显示地址的内容
-			$('#channel_article').load(url);
-		})
+	$(".page-link").click(function() {
+		//alert("点击了全部")
+		//获取点击的的url
+		var url = $(this).attr('data');
+		// console.log(url);
+		//在中间区域显示地址的内容
+		$('#channel_article').load(url);
 	})
 	function myopen(id) {
 		//在新窗口打开文章的详情J

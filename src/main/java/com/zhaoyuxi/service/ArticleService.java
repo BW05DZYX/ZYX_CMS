@@ -102,7 +102,7 @@ public interface ArticleService {
 	 * @param cid
 	 * @return
 	 */
-	PageInfo<Article> list(Integer pageNum, Integer channelId, Integer cid);
+	PageInfo<Article> list(Integer pageNum, Integer channelId, Integer cid,String key);
 
 	/**
 	 * 查询指定用户的文章
@@ -138,7 +138,7 @@ public interface ArticleService {
 	 * 
 	 * @return
 	 */
-	List<Article> last();
+	List<Article> last(String key);
 	
 	/**
 	 * 获取点击率文章
@@ -151,5 +151,9 @@ public interface ArticleService {
 	 * @return
 	 */
 	PageInfo<Article> commentList(int page,int pageSize);
-
+	
+	/**
+	 * 同步数据的方法
+	 */
+	public void sync();
 }

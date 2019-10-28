@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.google.gson.Gson;
 import com.zhaoyuxi.cms.entity.Article;
 import com.zhaoyuxi.common.utils.FileUtil;
+import com.zhaoyuxi.service.ArticleService;
 
 /**
  * @author 作者:赵玉玺
@@ -25,6 +26,8 @@ import com.zhaoyuxi.common.utils.FileUtil;
 @RunWith(SpringRunner.class)
 public class FileTest {
 
+	@Autowired
+	private ArticleService service;
 	
 	@Autowired
 	private RedisTemplate<String, Article> redisTemplate;
@@ -75,5 +78,9 @@ public class FileTest {
 		}
 		//移除添加后的信息
 		redisTemplate.delete("add_article");
+	}
+	
+	@Test
+	public void myTest001() {
 	}
 }

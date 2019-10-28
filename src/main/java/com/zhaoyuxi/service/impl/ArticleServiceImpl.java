@@ -4,15 +4,15 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
-import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zhaoyuxi.cms.dao.ArticleMapper;
 import com.zhaoyuxi.cms.entity.Article;
-import com.zhaoyuxi.cms.utils.ESUtils;
 import com.zhaoyuxi.cms.utils.HighUtil;
+import com.zhaoyuxi.cms.utils.SyncUtil;
 import com.zhaoyuxi.service.ArticleService;
 
 /**
@@ -22,10 +22,12 @@ import com.zhaoyuxi.service.ArticleService;
 @Service
 public class ArticleServiceImpl implements ArticleService {
 
-
 	@Autowired
 	ElasticsearchTemplate elasticsearchTemplate;
-	
+
+	@Autowired
+	RedisTemplate<String, Article> redisTemplate;
+
 	@Autowired
 	ArticleMapper articleMapper;
 
@@ -83,17 +85,31 @@ public class ArticleServiceImpl implements ArticleService {
 	}
 
 	@Override
-	public PageInfo<Article> list(Integer pageNum, Integer channelId, Integer cid) {
+	public PageInfo<Article> list(Integer pageNum, Integer channelId, Integer cid, String key) {
+		PageInfo<Article> page=null;
 		if (pageNum == 0) {
+			//进行分页显示
 			PageHelper.startPage(pageNum, articleMapper.list(0, 0).size());
+			//查询文章列表
 			List<Article> articles = articleMapper.list(channelId, cid);
-			return new PageInfo<Article>(articles);
+			page=new PageInfo<Article>(articles);
 		} else {
 			PageHelper.startPage(pageNum, 3);
 			List<Article> articles = articleMapper.list(channelId, cid);
-			return new PageInfo<Article>(articles);
-		}
+			//包装高亮集合
+			PageInfo<Article> pageInfoHigh = HighUtil.getHigh(elasticsearchTemplate, pageNum, 3, key, null,articleMapper.checkList(null).size());
+			//进行替换原集合
+			for (Article article : pageInfoHigh.getList()) {
+				for (int i = 0; i < articles.size(); i++) {
+					if (article.getId() == articles.get(i).getId()) {
+						articles.set(i, article);
+					}
+				}
 
+			}
+			page=new PageInfo<Article>(articles);
+		}
+		return page;
 	}
 
 	@Override
@@ -115,21 +131,34 @@ public class ArticleServiceImpl implements ArticleService {
 	@Override
 	public PageInfo<Article> listhots(String title, Integer pageNum, Integer pageSize) {
 		System.out.println("title   is ============ " + title);
-		PageInfo<Article> page=null;
+		PageInfo<Article> page = null;
+		
+		PageHelper.startPage(pageNum, pageSize);
+		List<Article> articleList = articleMapper.hotList(title);
 		if (title != null && !"".equals(title)) {
-			List<Article> articleList = articleMapper.hotList("");
-			page=HighUtil.getHigh(elasticsearchTemplate, pageNum, pageSize, title, articleList);
-		}else {
-			PageHelper.startPage(pageNum, pageSize);
-			List<Article> articleList = articleMapper.hotList(title);
-			page=new PageInfo<Article>(articleList);
+			//进行高亮处理
+			page = HighUtil.getHigh(elasticsearchTemplate, pageNum, pageSize, title, "hot",0);
+		} else {
+			page = new PageInfo<Article>(articleList);
 		}
 		return page;
 	}
 
 	@Override
-	public List<Article> last() {
-		return articleMapper.lastArticles();
+	public List<Article> last(String key) {
+		List<Article> articleListLast=articleMapper.lastArticles();
+		//进行高亮处理
+		List<Article> articleListHigh = HighUtil.getHigh(elasticsearchTemplate, 0, 0, key, null, articleMapper.checkList(null).size()).getList();
+		//进行集合替换
+		for (Article article : articleListHigh) {
+			for (int i = 0; i < articleListLast.size(); i++) {
+				if (article.getId() == articleListLast.get(i).getId()) {
+					articleListLast.set(i, article);
+				}
+			}
+
+		}
+		return articleListLast;
 	}
 
 	@Override
@@ -142,6 +171,16 @@ public class ArticleServiceImpl implements ArticleService {
 	public PageInfo<Article> commentList(int page, int pageSize) {
 		PageHelper.startPage(1, 10);
 		return new PageInfo<Article>(articleMapper.commentList());
+	}
+
+	@Override
+	public void sync() {
+		// 获取所有的文章
+		List<Article> articleListAll = articleMapper.checkList(2);
+		// 获取点击量文章
+		List<Article> articleListHit = articleMapper.hitsList();
+		SyncUtil.syncRedis(articleListAll, redisTemplate, articleListHit);
+		SyncUtil.syncEla(articleListAll, elasticsearchTemplate);
 	}
 
 }

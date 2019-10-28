@@ -17,7 +17,7 @@
 		$.post("/article/pass",{status:status,id:'${article.id}'},function(obj){
 			if(obj){
 				alert("操作成功!")
-				$("#content-wrapper").load("/article/checkList")
+				$("#content-wrapper").load("/article/checkList?status=0")
 			}
 		})
 		
@@ -29,14 +29,14 @@ function hot(status){
 		$.post("/article/sethot",{status:status,id:'${article.id}'},function(obj){
 			if(obj){
 				alert("操作成功!")
-				$("#content-wrapper").load("/article/checkList")
+				$("#content-wrapper").load("/article/checkList?status=0")
 			}
 		})
 		
 	}
 	
 	function goBack(){
-		$("#content-wrapper").load("/article/checkList")
+		$("#content-wrapper").load("/article/checkList?status=0")
 	}
 	
 	</script>

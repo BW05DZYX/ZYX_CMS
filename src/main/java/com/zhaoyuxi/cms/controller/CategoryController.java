@@ -3,6 +3,7 @@ package com.zhaoyuxi.cms.controller;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -39,14 +40,13 @@ public class CategoryController {
 	@RequestMapping("getCategories")
 	public String getCategoryByChId(HttpServletRequest request, Integer cid
 			,@RequestParam(defaultValue = "1",value="page") Integer pageNum
-			){
-		
+			,HttpSession session){
 		
 		List<Category> categoris = categoryService.getCategoryByChId(cid);
 		System.out.println("categoris is" + categoris);
 		
 		// 获取这个频道下的所有的文章  
-		PageInfo<Article> arPage =  articleService.list(pageNum,cid, 0);
+		PageInfo<Article> arPage =  articleService.list(pageNum,cid, 0,(String)session.getAttribute("key"));
 		request.setAttribute("pageInfo",arPage);
 		
 		request.setAttribute("catygories",categoris);

@@ -35,6 +35,7 @@
           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
             <a class="dropdown-item" href="#">返回网站</a>
             <a class="dropdown-item" href="#">修改密码</a>
+            <a class="dropdown-item" href="/article/sync">同步数据</a>
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="/user/logout" >退出</a>
           </div>

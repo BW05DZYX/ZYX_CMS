@@ -136,6 +136,7 @@ function publish(){
 $(function(){
 	//自动加载文章的栏目
 	var cid=${article.channelId }
+	var caid=${article.categoryId }
 	$.ajax({
 		type:"get",
 		url:"/article/getAllChn",
@@ -144,13 +145,15 @@ $(function(){
 			for(var i in list){
 				$("#channel").append("<option value='"+list[i].id+"'>"+list[i].name+"</option>")
 			}
-			var cid2=$("#channel").val();
-			$.get("/article/getCatsByChn",{channelId:cid2},function(list){
+			
+			$("#channel").val(cid)
+			$.get("/article/getCatsByChn",{channelId:cid},function(list){
 				
 				 for(var i in list){
 				  $("#category").append("<option value='"+list[i].id+"'>"+list[i].name+"</option>")
 
 				 }
+				 $("#category").val(caid)
 				 
 			 })
 		}

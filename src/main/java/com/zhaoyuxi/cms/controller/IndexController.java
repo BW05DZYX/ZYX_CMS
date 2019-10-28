@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,13 +45,28 @@ private Logger log = Logger.getLogger(IndexController.class);
 	 * @return
 	 */
 	@RequestMapping(value= {"/index","/",""},method=RequestMethod.GET)
-	public String index(HttpServletRequest request,
+	public String index(HttpSession session,HttpServletRequest request,
 			 @RequestParam( value="pageSize",defaultValue = "2") Integer pageSize,
 			 @RequestParam(value="page",defaultValue = "1") Integer pageNum,
 			 @RequestParam(defaultValue = "") String key 
 			) {
-		
 		log.info("this is log test");
+		//判断session中是否有值
+		if(session.getAttribute("key")==null) {
+			//将空白部分替换
+			if(key.contains(" ")||key.contains("\b")) {
+				String key2=key;
+				key=key.replaceAll(" ", "");
+				key=key.replaceAll("\b", "");
+				//进行回显的key值
+				session.setAttribute("key2", key2);
+			}else {
+				session.setAttribute("key2", key);
+			}
+			//进行操作的key值
+			session.setAttribute("key", key);
+		}
+		
 		
 		List<Channel> channels = cService.getChannels();
 		request.setAttribute("channels", channels);
@@ -59,7 +75,7 @@ private Logger log = Logger.getLogger(IndexController.class);
 		PageInfo<Article> arPage = articleService.listhots(key,pageNum, pageSize);
 		request.setAttribute("pageInfo", arPage);
 		//获取最新
-		List<Article> lastArticles = articleService.last();
+		List<Article> lastArticles = articleService.last(key);
 		request.setAttribute("lasts", lastArticles);
 		//友情链接
 		List<Link> links =  new ArrayList<Link>();
